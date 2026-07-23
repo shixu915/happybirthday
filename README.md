@@ -1,3 +1,1 @@
-# happybirthday
-帮基友做的，祝福她女朋友生日快乐
-https://shibobo.github.io/happybirthday/
+复制网友的生日祝福代码~
