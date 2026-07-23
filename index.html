@@ -73,64 +73,94 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-/* 适配移动端的响应式核心样式 */
+/* 全新优化的手机竖屏专属浪漫样式 */
 @media screen and (max-width: 768px) {
+    body {
+        background-color: #ffe !important; /* 保持与电脑端一致的温馨底色 */
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
     #main {
         width: 100% !important;
         height: 100vh !important;
-        overflow: hidden;
+        position: relative !important;
+        overflow: hidden !important;
     }
     #wrap {
         width: 100% !important;
-        height: 100% !important;
-        position: relative !important;
+        height: 100vh !important;
         margin: 0 !important;
+        position: relative !important;
     }
-    /* 调整文字排版层：置顶并在 Canvas 之上 */
+    
+    /* 1. 让文字层居中浮动在树冠上方，并带有朦胧精致的毛玻璃感 */
     #text {
-        width: 90% !important;
+        width: 86% !important;
         height: auto !important;
         position: absolute !important;
-        top: 5% !important;
-        left: 5% !important;
-        z-index: 10;
+        top: 6% !important;  /* 距离顶部略微留空 */
+        left: 7% !important;
+        z-index: 99 !important; /* 确保文字绝对在树的前面 */
         margin: 0 !important;
-        padding: 10px;
-        background: rgba(255, 255, 238, 0.7); /* 半透明背景，防止爱心树繁茂后看不清字 */
-        border-radius: 10px;
+        padding: 20px 15px !important;
+        /* 浪漫的半透明粉白渐变，既能看清字，又能隐约隐现后面的树枝 */
+        background: rgba(255, 255, 245, 0.75) !important;
+        backdrop-filter: blur(4px); /* 现代手机浏览器的毛玻璃模糊效果 */
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(255, 182, 193, 0.2);
+        box-sizing: border-box !important;
     }
     #code {
         font-size: 14px !important;
-        line-height: 20px !important;
+        line-height: 24px !important; /* 增大行距，手机阅读更舒适 */
+        text-align: center !important; /* 手机端文字居中更好看 */
+    }
+    #code .say {
+        display: block;
+        margin-bottom: 8px;
     }
     #code h1 {
         font-size: 18px !important;
-        margin: 5px 0 !important;
+        margin: 5px 0 12px 0 !important;
+        color: #ff4d6d !important;
     }
-    /* 调整时间计数器：放在底部 */
+    .space {
+        display: none !important; /* 手机端隐藏电脑端的空格缩进 */
+    }
+
+    /* 2. 彻底解决“树太偏下”的问题：将画布整体上移并放大 */
+    canvas {
+        position: absolute !important;
+        top: 15% !important; /* 核心修改：大幅度往上提，让树心和树冠正好衬托在文字下方 */
+        left: 50% !important;
+        transform: translateX(-50%) scale(1.1) !important; /* 水平居中，并整体放大1.1倍以顶满屏幕 */
+        transform-origin: top center !important;
+        z-index: 1 !important;
+    }
+
+    /* 3. 调整时间计数器：精致地嵌入在屏幕的最底部 */
     #clock-box {
         position: absolute !important;
-        bottom: 5% !important;
+        bottom: 4% !important; /* 锁死在底部 */
         left: 5% !important;
         width: 90% !important;
         text-align: center !important;
-        z-index: 10;
-        font-size: 14px !important;
+        z-index: 99 !important;
         margin: 0 !important;
+        font-size: 13px !important;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 8px 0;
+        border-radius: 20px;
     }
     #clock {
-        font-size: 16px !important;
-    }
-    /* 让大画布等比缩放并铺满手机屏幕中部底部 */
-    canvas {
-        width: 100% !important;
-        height: auto !important;
-        position: absolute !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        z-index: 1;
+        font-size: 15px !important;
+        font-weight: bold;
+        margin-top: 3px;
     }
 }
+
         </style>
 </head>
     <body>
@@ -249,24 +279,27 @@ window.startSurprise = function() {
     }, 1500);
 
     // 2. 触发音乐播放
-    var audio = $('#bgm')[0];
+    var audio = $('#bgm')[0]; // 注意这里加上 [0] 才能正确获取原生原生 DOM 节点
     if (audio) {
         audio.play().catch(function(err){
             console.log("音频播放被拦截", err);
         });
     }
 
-    // 新增：如果是手机端，直接让包裹层定位，防止 PC 端的横向平移移动动画把手机端的排版拉变形
+    // 3. 针对手机端：锁定位置，不让电脑端的 moveAnimate 平移偏心动画作怪
     if ($(window).width() < 768) {
-        $('#text').css({ 'position': 'absolute', 'left': '5%', 'top': '5%' });
+        $('#text').css({ 'position': 'absolute', 'left': '7%', 'top': '6%' });
+        // 强制覆盖 Canvas 属性，确保动画执行时依然强制居中
+        $('#canvas').css({ 'position': 'absolute', 'top': '15%', 'left': '50%' });
     }
 
-    // 3. 释放控制锁，开始生长
+    // 4. 释放控制锁，让爱心树开始浪漫生长
     hold = 0; 
     canvas.unbind("click");
     canvas.unbind("mousemove");
     canvas.removeClass('hand');
 };
+
 
 
 // 依然保留鼠标悬浮爱心红点时的手势效果
@@ -308,21 +341,28 @@ canvas.mousemove(function(e){
             } while (tree.canFlower());
         }));
 
-        var moveAnimate = eval(Jscex.compile("async", function () {
+             var moveAnimate = eval(Jscex.compile("async", function () {
             tree.snapshot("p1", 240, 0, 610, 680);
-            while (tree.move("p1", 500, 0)) {
+            // 如果是手机端，不进行横向平移，直接原地生成 p2 快照
+            var targetX = ($(window).width() < 768) ? 240 : 500;
+            while (tree.move("p1", targetX, 0)) {
                 foot.draw();
                 $await(Jscex.Async.sleep(10));
             }
             foot.draw();
-            tree.snapshot("p2", 500, 0, 610, 680);
+            tree.snapshot("p2", targetX, 0, 610, 680);
 
-            // 会有闪烁不得意这样做, (＞﹏＜)
-            canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
-            canvas.css("background", "#ffe");
-            $await(Jscex.Async.sleep(300));
-            canvas.css("background", "none");
+            // 如果是手机端，直接跳过这个会导致缩放错位的背景切换逻辑
+            if ($(window).width() >= 768) {
+                canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+                canvas.css("background", "#ffe");
+                $await(Jscex.Async.sleep(300));
+                canvas.css("background", "none");
+            } else {
+                $await(Jscex.Async.sleep(300));
+            }
         }));
+
 
         var jumpAnimate = eval(Jscex.compile("async", function () {
             var ctx = tree.ctx;
