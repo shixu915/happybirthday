@@ -1,5 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "htt`://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>祝小陈生日快乐!</title>     
     <link type="text/css" rel="stylesheet" href="./css/default.css">
     <script type="text/javascript" src="./css/jquery.min.js"></script>
@@ -34,20 +36,24 @@
     color: #fff;
     font-family: "Microsoft YaHei", sans-serif;
     animation: fadeIn 2s ease-in-out;
+    padding: 0 20px; /* 增加左右边距，防止手机上文字贴边 */
 }
 .welcome-title {
-    font-size: 26px;
+    font-size: 22px; /* 调小字号，适配手机 */
     font-weight: 300;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    line-height: 1.4; /* 增加行高，多行折行时更美观 */
     text-shadow: 0 0 10px rgba(255,192,203,0.5);
 }
 .welcome-subtitle {
-    font-size: 16px;
+    font-size: 14px; /* 调小字号 */
     color: #ffd1dc;
     margin-bottom: 40px;
     letter-spacing: 1px;
+    line-height: 1.4;
 }
+
 .welcome-btn {
     padding: 12px 35px;
     font-size: 18px;
@@ -67,8 +73,64 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
-
+/* 适配移动端的响应式核心样式 */
+@media screen and (max-width: 768px) {
+    #main {
+        width: 100% !important;
+        height: 100vh !important;
+        overflow: hidden;
+    }
+    #wrap {
+        width: 100% !important;
+        height: 100% !important;
+        position: relative !important;
+        margin: 0 !important;
+    }
+    /* 调整文字排版层：置顶并在 Canvas 之上 */
+    #text {
+        width: 90% !important;
+        height: auto !important;
+        position: absolute !important;
+        top: 5% !important;
+        left: 5% !important;
+        z-index: 10;
+        margin: 0 !important;
+        padding: 10px;
+        background: rgba(255, 255, 238, 0.7); /* 半透明背景，防止爱心树繁茂后看不清字 */
+        border-radius: 10px;
+    }
+    #code {
+        font-size: 14px !important;
+        line-height: 20px !important;
+    }
+    #code h1 {
+        font-size: 18px !important;
+        margin: 5px 0 !important;
+    }
+    /* 调整时间计数器：放在底部 */
+    #clock-box {
+        position: absolute !important;
+        bottom: 5% !important;
+        left: 5% !important;
+        width: 90% !important;
+        text-align: center !important;
+        z-index: 10;
+        font-size: 14px !important;
+        margin: 0 !important;
+    }
+    #clock {
+        font-size: 16px !important;
+    }
+    /* 让大画布等比缩放并铺满手机屏幕中部底部 */
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        z-index: 1;
+    }
+}
         </style>
 </head>
     <body>
@@ -130,8 +192,14 @@
 
         var width = canvas.width();
         var height = canvas.height();        
+        // 如果是手机端，强制保持原本的 1100x680 虚拟分辨率，交给 CSS 去等比缩放，防止爱心树画变形
+        if ($(window).width() < 768) {
+            width = 1100;
+            height = 680;
+        }
         canvas.attr("width", width);
         canvas.attr("height", height);
+
         var opts = {
             seed: {
                 x: width / 2 - 20,
@@ -180,20 +248,26 @@ window.startSurprise = function() {
         $('#welcome-overlay').remove();
     }, 1500);
 
-    // 2. 触发音乐播放（解决浏览器限制不让自动播放的问题）
+    // 2. 触发音乐播放
     var audio = $('#bgm')[0];
     if (audio) {
         audio.play().catch(function(err){
-            console.log("音频播放被拦截，需要用户交互", err);
+            console.log("音频播放被拦截", err);
         });
     }
 
-    // 3. 直接释放控制锁，让爱心树开始浪漫生长！
+    // 新增：如果是手机端，直接让包裹层定位，防止 PC 端的横向平移移动动画把手机端的排版拉变形
+    if ($(window).width() < 768) {
+        $('#text').css({ 'position': 'absolute', 'left': '5%', 'top': '5%' });
+    }
+
+    // 3. 释放控制锁，开始生长
     hold = 0; 
     canvas.unbind("click");
     canvas.unbind("mousemove");
     canvas.removeClass('hand');
 };
+
 
 // 依然保留鼠标悬浮爱心红点时的手势效果
 canvas.mousemove(function(e){
