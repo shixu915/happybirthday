@@ -1,5 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "htt`://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 新增移动端视口适配标签 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>祝小陈生日快乐!</title>     
     <link type="text/css" rel="stylesheet" href="./css/default.css">
     <script type="text/javascript" src="./css/jquery.min.js"></script>
@@ -34,16 +38,19 @@
     color: #fff;
     font-family: "Microsoft YaHei", sans-serif;
     animation: fadeIn 2s ease-in-out;
+    padding: 0 20px; /* 新增：给手机端左右留出边距 */
+    box-sizing: border-box;
 }
 .welcome-title {
-    font-size: 26px;
+    font-size: 20px; /* 修改：减小字号，防止手机端长标题难看地折行 */
     font-weight: 300;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
     text-shadow: 0 0 10px rgba(255,192,203,0.5);
+    line-height: 1.4;
 }
 .welcome-subtitle {
-    font-size: 16px;
+    font-size: 14px; /* 修改：减小副标题字号 */
     color: #ffd1dc;
     margin-bottom: 40px;
     letter-spacing: 1px;
@@ -67,7 +74,29 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
+/* 新增：手机移动端专属等比例缩放自适应样式 */
+@media screen and (max-width: 768px) {
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #ffe; /* 保持与动画背景色一致 */
+    }
+    #main {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1100px;  /* 锁定PC端原始逻辑宽度 */
+        height: 680px;  /* 锁定PC端原始逻辑高度 */
+        /* 通过 CSS 矩阵自动计算手机屏幕宽度与 1100px 的比例进行完美缩放居中 */
+        transform: translate(-50%, -50%) scale(calc(window.innerWidth / 1100));
+        transform-origin: center center;
+    }
+    /* 修复文字在手机端由于缩放导致可能产生的模糊 */
+    #text, #clock-box {
+        -webkit-font-smoothing: antialiased;
+    }
+}
 
         </style>
 </head>
@@ -128,10 +157,19 @@
             $("#error").show();
             return false;        }
 
-        var width = canvas.width();
-        var height = canvas.height();        
+        // 修改：在移动端下强制锁定动画基准宽高为 1100 * 680，确保特效树不散架
+        var width = window.innerWidth <= 768 ? 1100 : canvas.width();
+        var height = window.innerWidth <= 768 ? 680 : canvas.height();        
         canvas.attr("width", width);
         canvas.attr("height", height);
+        
+        // 新增：手机端动态监听屏幕旋转或缩放变化
+        if(window.innerWidth <= 768) {
+            window.addEventListener('resize', function() {
+                $('#main').css('transform', 'translate(-50%, -50%) scale(' + (window.innerWidth / 1100) + ')');
+            });
+        }
+
         var opts = {
             seed: {
                 x: width / 2 - 20,
@@ -256,17 +294,38 @@ canvas.mousemove(function(e){
                 tree.ctx.clearRect(0, 0, width, height);
                 tree.jump();
                 foot.draw();
-                $await(Jscex.Async.sleep(25));
+                // 修改：如果是手机端，稍微缩短延迟至 16 毫秒（约等于 60帧/秒 黄金帧率），让爱心树跳动更丝滑
+                var sleepTime = window.innerWidth <= 768 ? 16 : 25;
+                $await(Jscex.Async.sleep(sleepTime));
             }
         }));
 
+
         var textAnimate = eval(Jscex.compile("async", function () {
         var together = new Date();
-        together.setFullYear(2025,5,15 );      //时间年月日
+        together.setFullYear(2025,6,15 );      //时间年月日
         together.setHours(00);            //小时  
         together.setMinutes(33);          //分钟
         together.setSeconds(0);         //秒前一位
         together.setMilliseconds(2);        //秒第二位
+
+        // 新增：判断如果是手机端，在文字和计时器显示前，微调它们的层级和排版，防止手机上重叠错位
+        if (window.innerWidth <= 768) {
+            $("#text").css({
+                "position": "absolute",
+                "z-index": "99",
+                "width": "500px",
+                "left": "40px",
+                "top": "40px"
+            });
+            $("#clock-box").css({
+                "position": "absolute",
+                "z-index": "99",
+                "left": "40px",
+                "bottom": "60px",
+                "top": "auto" /* 取消PC端的顶部定位，改到手机端底部显示 */
+            });
+        }
 
         $("#code").show().typewriter();
             $("#clock-box").fadeIn(500);
