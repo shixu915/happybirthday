@@ -1,7 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "htt`://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>祝小陈生日快乐!</title>     
     <link type="text/css" rel="stylesheet" href="./css/default.css">
     <script type="text/javascript" src="./css/jquery.min.js"></script>
@@ -36,24 +34,20 @@
     color: #fff;
     font-family: "Microsoft YaHei", sans-serif;
     animation: fadeIn 2s ease-in-out;
-    padding: 0 20px; /* 增加左右边距，防止手机上文字贴边 */
 }
 .welcome-title {
-    font-size: 22px; /* 调小字号，适配手机 */
+    font-size: 26px;
     font-weight: 300;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    line-height: 1.4; /* 增加行高，多行折行时更美观 */
+    letter-spacing: 2px;
+    margin-bottom: 10px;
     text-shadow: 0 0 10px rgba(255,192,203,0.5);
 }
 .welcome-subtitle {
-    font-size: 14px; /* 调小字号 */
+    font-size: 16px;
     color: #ffd1dc;
     margin-bottom: 40px;
     letter-spacing: 1px;
-    line-height: 1.4;
 }
-
 .welcome-btn {
     padding: 12px 35px;
     font-size: 18px;
@@ -73,93 +67,7 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-/* 全新优化的手机竖屏专属浪漫样式 */
-@media screen and (max-width: 768px) {
-    body {
-        background-color: #ffe !important; /* 保持与电脑端一致的温馨底色 */
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    #main {
-        width: 100% !important;
-        height: 100vh !important;
-        position: relative !important;
-        overflow: hidden !important;
-    }
-    #wrap {
-        width: 100% !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        position: relative !important;
-    }
-    
-    /* 1. 让文字层居中浮动在树冠上方，并带有朦胧精致的毛玻璃感 */
-    #text {
-        width: 86% !important;
-        height: auto !important;
-        position: absolute !important;
-        top: 6% !important;  /* 距离顶部略微留空 */
-        left: 7% !important;
-        z-index: 99 !important; /* 确保文字绝对在树的前面 */
-        margin: 0 !important;
-        padding: 20px 15px !important;
-        /* 浪漫的半透明粉白渐变，既能看清字，又能隐约隐现后面的树枝 */
-        background: rgba(255, 255, 245, 0.75) !important;
-        backdrop-filter: blur(4px); /* 现代手机浏览器的毛玻璃模糊效果 */
-        -webkit-backdrop-filter: blur(4px);
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(255, 182, 193, 0.2);
-        box-sizing: border-box !important;
-    }
-    #code {
-        font-size: 14px !important;
-        line-height: 24px !important; /* 增大行距，手机阅读更舒适 */
-        text-align: center !important; /* 手机端文字居中更好看 */
-    }
-    #code .say {
-        display: block;
-        margin-bottom: 8px;
-    }
-    #code h1 {
-        font-size: 18px !important;
-        margin: 5px 0 12px 0 !important;
-        color: #ff4d6d !important;
-    }
-    .space {
-        display: none !important; /* 手机端隐藏电脑端的空格缩进 */
-    }
 
-    /* 2. 彻底解决“树太偏下”的问题：将画布整体上移并放大 */
-    canvas {
-        position: absolute !important;
-        top: 15% !important; /* 核心修改：大幅度往上提，让树心和树冠正好衬托在文字下方 */
-        left: 50% !important;
-        transform: translateX(-50%) scale(1.1) !important; /* 水平居中，并整体放大1.1倍以顶满屏幕 */
-        transform-origin: top center !important;
-        z-index: 1 !important;
-    }
-
-    /* 3. 调整时间计数器：精致地嵌入在屏幕的最底部 */
-    #clock-box {
-        position: absolute !important;
-        bottom: 4% !important; /* 锁死在底部 */
-        left: 5% !important;
-        width: 90% !important;
-        text-align: center !important;
-        z-index: 99 !important;
-        margin: 0 !important;
-        font-size: 13px !important;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 8px 0;
-        border-radius: 20px;
-    }
-    #clock {
-        font-size: 15px !important;
-        font-weight: bold;
-        margin-top: 3px;
-    }
-}
 
         </style>
 </head>
@@ -222,14 +130,8 @@
 
         var width = canvas.width();
         var height = canvas.height();        
-        // 如果是手机端，强制保持原本的 1100x680 虚拟分辨率，交给 CSS 去等比缩放，防止爱心树画变形
-        if ($(window).width() < 768) {
-            width = 1100;
-            height = 680;
-        }
         canvas.attr("width", width);
         canvas.attr("height", height);
-
         var opts = {
             seed: {
                 x: width / 2 - 20,
@@ -278,29 +180,20 @@ window.startSurprise = function() {
         $('#welcome-overlay').remove();
     }, 1500);
 
-    // 2. 触发音乐播放
-    var audio = $('#bgm')[0]; // 注意这里加上 [0] 才能正确获取原生原生 DOM 节点
+    // 2. 触发音乐播放（解决浏览器限制不让自动播放的问题）
+    var audio = $('#bgm')[0];
     if (audio) {
         audio.play().catch(function(err){
-            console.log("音频播放被拦截", err);
+            console.log("音频播放被拦截，需要用户交互", err);
         });
     }
 
-    // 3. 针对手机端：锁定位置，不让电脑端的 moveAnimate 平移偏心动画作怪
-    if ($(window).width() < 768) {
-        $('#text').css({ 'position': 'absolute', 'left': '7%', 'top': '6%' });
-        // 强制覆盖 Canvas 属性，确保动画执行时依然强制居中
-        $('#canvas').css({ 'position': 'absolute', 'top': '15%', 'left': '50%' });
-    }
-
-    // 4. 释放控制锁，让爱心树开始浪漫生长
+    // 3. 直接释放控制锁，让爱心树开始浪漫生长！
     hold = 0; 
     canvas.unbind("click");
     canvas.unbind("mousemove");
     canvas.removeClass('hand');
 };
-
-
 
 // 依然保留鼠标悬浮爱心红点时的手势效果
 canvas.mousemove(function(e){
@@ -341,28 +234,21 @@ canvas.mousemove(function(e){
             } while (tree.canFlower());
         }));
 
-             var moveAnimate = eval(Jscex.compile("async", function () {
+        var moveAnimate = eval(Jscex.compile("async", function () {
             tree.snapshot("p1", 240, 0, 610, 680);
-            // 如果是手机端，不进行横向平移，直接原地生成 p2 快照
-            var targetX = ($(window).width() < 768) ? 240 : 500;
-            while (tree.move("p1", targetX, 0)) {
+            while (tree.move("p1", 500, 0)) {
                 foot.draw();
                 $await(Jscex.Async.sleep(10));
             }
             foot.draw();
-            tree.snapshot("p2", targetX, 0, 610, 680);
+            tree.snapshot("p2", 500, 0, 610, 680);
 
-            // 如果是手机端，直接跳过这个会导致缩放错位的背景切换逻辑
-            if ($(window).width() >= 768) {
-                canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
-                canvas.css("background", "#ffe");
-                $await(Jscex.Async.sleep(300));
-                canvas.css("background", "none");
-            } else {
-                $await(Jscex.Async.sleep(300));
-            }
+            // 会有闪烁不得意这样做, (＞﹏＜)
+            canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+            canvas.css("background", "#ffe");
+            $await(Jscex.Async.sleep(300));
+            canvas.css("background", "none");
         }));
-
 
         var jumpAnimate = eval(Jscex.compile("async", function () {
             var ctx = tree.ctx;
