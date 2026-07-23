@@ -12,15 +12,80 @@
     <script type="text/javascript" src="./css/functions.js" charset="utf-8"></script>
     <script type="text/javascript" src="./css/love.js" charset="utf-8"></script>
       <style type="text/css">
-<!--
+
 .STYLE1 {color: #666666}
--->
+/* 新增：专属宇宙浪漫开场遮罩样式 */
+#welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%); /* 唯美深夜星空渐变色 */
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1.5s ease;
+}
+.welcome-box {
+    text-align: center;
+    color: #fff;
+    font-family: "Microsoft YaHei", sans-serif;
+    animation: fadeIn 2s ease-in-out;
+}
+.welcome-title {
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255,192,203,0.5);
+}
+.welcome-subtitle {
+    font-size: 16px;
+    color: #ffd1dc;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+}
+.welcome-btn {
+    padding: 12px 35px;
+    font-size: 18px;
+    color: #fff;
+    background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); /* 浪漫樱花粉按钮 */
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+    transition: all 0.3s ease;
+}
+.welcome-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 25px rgba(255, 117, 140, 0.6);
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
         </style>
 </head>
     <body>
       <audio id="bgm" loop>
           <source src="music/love.mp3" type="audio/mp3" />
       </audio> 
+
+      <!-- 新增：浪漫交互开场动画层 -->
+<div id="welcome-overlay">
+    <div class="welcome-box">
+        <h2 class="welcome-title">🌸 这里有一份属于小陈的专属宇宙 — 开启生日惊喜 ✨</h2>
+        <p class="welcome-subtitle">（ 准备好接收今天的第一份浪漫了吗？ ）</p>
+        <!-- 幽默文案指引按钮 -->
+        <button class="welcome-btn" onclick="startSurprise()">👉 请奶农大王点这里 👈</button>
+    </div>
+</div>
+
 
         <div id="main">
              <div id="wrap">
@@ -107,24 +172,37 @@
         var seed = tree.seed;
         var foot = tree.footer;
         var hold = 1;
-        canvas.click(function(e) {
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            if (seed.hover(x, y)) {
-                hold = 0; 
-                $('#bgm')[0].play(); // <--- 添加这行代码来触发播放
-                canvas.unbind("click");
-                canvas.unbind("mousemove");
-                canvas.removeClass('hand');
-            }
-        })
-.mousemove(function(e){
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            canvas.toggleClass('hand', seed.hover(x, y));
+        // 修改：将原来的点击红心改为点击唯美遮罩按钮触发
+window.startSurprise = function() {
+    // 1. 唯美淡出引导屏并销毁
+    $('#welcome-overlay').css('opacity', '0');
+    setTimeout(function() {
+        $('#welcome-overlay').remove();
+    }, 1500);
+
+    // 2. 触发音乐播放（解决浏览器限制不让自动播放的问题）
+    var audio = $('#bgm')[0];
+    if (audio) {
+        audio.play().catch(function(err){
+            console.log("音频播放被拦截，需要用户交互", err);
         });
+    }
+
+    // 3. 直接释放控制锁，让爱心树开始浪漫生长！
+    hold = 0; 
+    canvas.unbind("click");
+    canvas.unbind("mousemove");
+    canvas.removeClass('hand');
+};
+
+// 依然保留鼠标悬浮爱心红点时的手势效果
+canvas.mousemove(function(e){
+    var offset = canvas.offset(), x, y;
+    x = e.pageX - offset.left;
+    y = e.pageY - offset.top;
+    canvas.toggleClass('hand', seed.hover(x, y));
+});
+
 
         var seedAnimate = eval(Jscex.compile("async", function () {
             seed.draw();
